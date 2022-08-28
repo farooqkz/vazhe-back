@@ -7,6 +7,7 @@ class Word(pw.Model):
 
     word = pw.CharField(index=True, max_length=48)
     word_fa = pw.CharField(index=True, max_length=48)
+    badword = pw.IntegerField()
     pron_eng = pw.TextField()
     origin = pw.CharField(index=True, max_length=48)
 

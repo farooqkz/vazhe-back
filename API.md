@@ -11,6 +11,7 @@ Optional fields:
  - `pron_eng`(`str`): Pronounciation in English.
  - `pron_per`(`str`): Pronounciation hint in Persian.
  - `origin`(`str`): Origin of this word.
+ - `badword`(`int`): A number from 0 to 15 which shows how much filthy this word is. 0 if it's a regular word.
  - `usages`(`array[str]`): Usages in a sentence.
 
 ## POST `/words`
@@ -20,7 +21,7 @@ Create a new word(req. body: word defintion).
 
 ## PUT `/words/<id>`
 ### Rate limited(1/s)
-
+m
 Modify the word with ID `<id>`. Any supplied field will be set to this, except `id` and `word`
 
 ## GET `/words/<page>/<rows_num>`

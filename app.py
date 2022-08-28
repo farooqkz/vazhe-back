@@ -14,15 +14,14 @@ app = Flask(__name__)
 app.secret_key = os.urandom(10)
 
 limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=["1/second"]
+    app, key_func=get_remote_address, default_limits=["1/second"]
 )
 
 admin = Admin(app)
 
 cache = Cache()
 cache.init_app(app)
+
 
 @app.before_request
 def db_connect():
@@ -37,17 +36,25 @@ def db_disconnect():
 
 def word_to_dict(word: Word) -> dict:
     w = dict()
-    for attr in ("id","word","word_fa","pron_eng","pron_per","origin"):
+    for attr in (
+        "id",
+        "word",
+        "word_fa",
+        "pron_eng",
+        "pron_per",
+        "origin",
+        "badword",
+    ):
         w[attr] = getattr(word, attr)
     w["usages"] = list()
     usages = Usage.select(Usage.usage).where(Usage.word == word)
     for usage in usages:
         w["usages"].append(usage.usage)
-    
+
     return w
 
 
-@app.route("/words", methods=("POST", ))
+@app.route("/words", methods=("POST",))
 @limiter.limit("1/second")
 def create_word():
     if not request.is_json:
@@ -70,13 +77,13 @@ def create_word():
         pron_per=pron_per,
         origin=origin,
     )
-    
+
     if len(usages) > 0:
         Usage.bulk_create(Usage(word=word, usage=u) for u in usages)
     return "well done"
 
 
-@app.route("/words/<int:id_>", methods=("PUT", ))
+@app.route("/words/<int:id_>", methods=("PUT",))
 @limiter.limit("1/second")
 def modify_word(id_: int):
     if not request.is_json:
@@ -88,12 +95,11 @@ def modify_word(id_: int):
     except pw.DoesNotExist:
         abort(404)
 
-
     update_dict = dict()
     for key in ("word_fa", "pron_eng", "pron_per", "origin"):
         if key in request.json:
             update_dict[key] = request.json[key]
-    
+
     word.update(update_dict).execute()
     if "usages" not in request.json:
         return "well done"
@@ -122,7 +128,6 @@ def all_words_json():
     return {
         "words": list(map(word_to_dict, Word.select().order_by(Word.word)))
     }
-
 
 
 @app.route("/words/pdf")
