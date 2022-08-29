@@ -68,6 +68,7 @@ def create_word():
     pron_eng = request.json.get("pron_eng", "")
     pron_per = request.json.get("pron_per", "")
     origin = request.json.get("origin", "")
+    badword = request.json.get("badword", False)
     usages = request.json.get("usages", [])
 
     word = Word.create(
@@ -76,6 +77,7 @@ def create_word():
         pron_eng=pron_eng,
         pron_per=pron_per,
         origin=origin,
+        badword=badword
     )
 
     if len(usages) > 0:
@@ -96,7 +98,7 @@ def modify_word(id_: int):
         abort(404)
 
     update_dict = dict()
-    for key in ("word_fa", "pron_eng", "pron_per", "origin"):
+    for key in ("word_fa", "pron_eng", "pron_per", "origin", "badword"):
         if key in request.json:
             update_dict[key] = request.json[key]
 

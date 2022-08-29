@@ -11,7 +11,7 @@ Optional fields:
  - `pron_eng`(`str`): Pronounciation in English.
  - `pron_per`(`str`): Pronounciation hint in Persian.
  - `origin`(`str`): Origin of this word.
- - `badword`(`int`): A number from 0 to 15 which shows how much filthy this word is. 0 if it's a regular word.
+ - `badword`(`bool`): True if it's a badword(e.g. `f*ck`)
  - `usages`(`array[str]`): Usages in a sentence.
 
 ## POST `/words`
